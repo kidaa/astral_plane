@@ -6,9 +6,13 @@
   <link rel="stylesheet" type="text/css" href="dist/jquery.gridster.css">
   <link rel="stylesheet" type="text/css" href="assets/demo.css">
 
-      <script type="text/javascript" src="assets/jquery.js"></script>
+      <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+      <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+      <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
       <script src="dist/jquery.gridster.js" type="text/javascript" charset="utf-8"></script>
       <script src="assets/jquery.kontrol.js"></script>
+
 </head>
 
 <body>
@@ -52,9 +56,9 @@
         {
             col: 3,
             row: 1,
-            size_x: 1,
+            size_x: 2,
             size_y: 1,
-            html: '<li />'
+            html: '<li><div style="margin-top: 40px;" id="slider"></div></li>'
         },
         {
             col: 4,
@@ -147,6 +151,11 @@
                               }
                           })
                       .css({'border':'5px solid #BBB'});
+
+
+            $(function() {
+               $( "#slider" ).slider();
+             });
 
             //ui stuff
 
