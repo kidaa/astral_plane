@@ -1,0 +1,234 @@
+
+<!doctype html>
+<html>
+<head>
+  <title>Octoblu Astral Plane</title>
+  <link rel="stylesheet" type="text/css" href="dist/jquery.gridster.css">
+  <link rel="stylesheet" type="text/css" href="assets/demo.css">
+
+      <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+      <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+      <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+      <script src="dist/jquery.gridster.js" type="text/javascript" charset="utf-8"></script>
+      <script src="assets/jquery.kontrol.js"></script>
+
+</head>
+
+<body>
+
+    <div class="controls">
+        <button class="js-seralize">Build from Array</button>
+
+        <button class="enableDrag">Drag Enable</button>
+        <button class="disableDrag">Drag Disable</button>
+        <button class="AddDial">Add Dial</button>
+        <button class="AddPad">Add XY Pad</button>
+        <button class="AddSlider">Add Slider</button>
+         <button class="j2-seralize">Serialize</button>
+    </div>
+
+    <div class="gridster">
+        <ul>
+        </ul>
+    </div>
+
+
+
+
+    <script type="text/javascript">
+
+
+      var gridster;
+
+      // same object than generated with gridster.serialize() method
+
+      var created = [];
+
+      var ui_data = [];
+
+      var serialization = [];
+
+
+// Enable and Disable Dragging
+
+      $('.disableDrag').on('click', function() {
+            gridster.disable();
+
+          });
+
+          $('.enableDrag').on('click', function() {
+                gridster.enable();
+              });
+
+// enable/disable end
+
+$('.AddDial').on('click', function() {
+
+      var className = prompt("Please enter your a name for this Dial");
+      var classV = "." + className;
+
+      ui_data.push({"className": className, "classV": classV, "type": "dial"});
+
+      var html = '<li><input type="text" value="75" class="' + className + '"></li>';
+      gridster.add_widget(html, 2, 2);
+      createUI("dial", classV);
+    });
+
+$('.AddPad').on('click', function() {
+
+      var className = prompt("Please enter your a name for this XY Pad");
+      var classV = "." + className;
+
+      ui_data.push({"className": className, "classV": classV, "type": "pad"});
+
+      var html = '<li style="min-width: 200px; min-height: 200px;"><fieldset class="' + className + '" data-width="200" data-height="200"><legend>XY Pad</legend>x : <input name="x" value=27>y : <input name="y" value=80></fieldset></li>';
+
+      gridster.add_widget(html, 2, 2);
+      createUI("pad", classV);
+    });
+
+$('.AddSlider').on('click', function() {
+
+      var className = prompt("Please enter your a name for this Slider");
+      var classV = "." + className;
+
+      ui_data.push({"className": className, "classV": classV, "type": "slider"});
+
+      var html = '<li><div style="margin-top: 40px;" id="slider" class="' + className + '"></div></li>';
+      gridster.add_widget(html, 2, 1, function(data){
+        console.log("Widget Added: ", data);
+      });
+      createUI("slider", classV);
+    });
+
+    $('.j2-seralize').on('click', function() {
+             var s = gridster.serialize();
+             serialization = s;
+
+
+
+          //    console.log($(".gridster").find(".dial2"));
+
+           console.log("log: ", s);
+           console.log("ui data: ", ui_data);
+
+
+
+            //console.log(gridster.$widgets);
+          });
+      // sort serialization
+      serialization = Gridster.sort_by_row_and_col_asc(serialization);
+
+      $(function(){
+
+        gridster = $(".gridster ul").gridster({
+          widget_base_dimensions: [100, 100],
+          widget_margins: [5, 5],
+          serialize_params: function ($w, wgd) {
+            return {
+                id: wgd.el[0].id,
+                col: wgd.col,
+                row: wgd.row,
+                size_x: wgd.size_x,
+                size_y: wgd.size_y,
+                htmlContent: $($w).html()
+            };
+        }
+        }).data('gridster');
+
+
+        $('.js-seralize').on('click', function() {
+          //  gridster.remove_all_widgets();
+            $.each(serialization, function() {
+              if(!(inArray2(this.htmlContent, gridster.serialize())))
+                gridster.add_widget(this.htmlContent, this.size_x, this.size_y, this.col, this.row);
+            });
+
+            $.each(ui_data, function() {
+
+              createUI(this.type, this.classV);
+
+            });
+
+
+
+        });
+
+      });
+
+
+      function createUI(type, className) {
+
+        console.log(inArray(className, created));
+
+        if(inArray(className, created) == true){
+          return;
+        }else if(inArray( className, created) == false){
+
+          created.push(className);
+
+                    switch(type) {
+              case "dial":
+              var $dial = $(className)
+                          .dial({
+                              'change':function(e){
+                                      console.log(className + ": ",e);
+                                  }
+                              });
+                  break;
+              case "pad":
+              var $pad = $(className)
+                          .xy({
+                                  displayPrevious:false
+                                  , min : -100
+                                  , max : 100
+                                  , fgColor:"#222222"
+                                  , bgColor:"#EEEEEE"
+                                  , change : function (value) {
+                                      console.log("change " + className + ": ", value);
+                                  }
+                              })
+                          .css({'border':'5px solid #BBB'});
+
+                  break;
+              case "slider":
+              var $slider = $(className)
+                          .slider({
+                              'change':function(event,ui){
+                                      console.log(className + ": ",ui.value);
+                                  }
+                              });
+                  break;
+
+            }
+
+          }
+      }
+
+
+      function inArray(needle,haystack)
+    {
+        var count=haystack.length;
+        for(var i=0;i<count;i++)
+        {
+            if(haystack[i]== needle){return true;}
+        }
+        return false;
+    }
+
+
+          function inArray2(needle,haystack)
+        {
+            var count=haystack.length;
+            for(var i=0;i<count;i++)
+            {
+                if(haystack[i].htmlContent== needle){return true;}
+            }
+            return false;
+        }
+
+
+</script>
+</body>
+</html>
