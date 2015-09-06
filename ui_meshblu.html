@@ -47,27 +47,31 @@
 
           var created = [];
 
+          var data = {};
+
           var ui_data = [];
 
           var serialization = [];
 
-    var conn = meshblu.createConnection({
-   "uuid": "ab8e4931-d3d7-4de3-a06a-a3dd90541456",
-   "token": "59cdc2dbb67167af153550602811d61a226a9e72"
- });
+          var GET = {};
+          var query = window.location.search.substring(1).split("&");
+          for (var i = 0, max = query.length; i < max; i++)
+          {
+              if (query[i] === "") // check for trailing & with no param
+                  continue;
+
+              var param = query[i].split("=");
+              GET[decodeURIComponent(param[0])] = decodeURIComponent(param[1] || "");
+          }
+          var conn = meshblu.createConnection({
+              "uuid": GET.uuid,
+              "token": GET.token
+            });
+
 
  conn.on('ready', function(data){
  console.log('UUID AUTHENTICATED!');
  console.log(data);
-
- // Send and receive messages
- /*conn.message({
- "devices": "*",
- "payload": {
- "red":"on"
- }
- }); */
-
 
 
 
@@ -137,7 +141,7 @@ $('.AddSlider').on('click', function() {
            console.log("ui data: ", ui_data);
 
            conn.update({
-  "uuid": "ab8e4931-d3d7-4de3-a06a-a3dd90541456",
+  "uuid": GET.uuid,
   "widgets": serialization,
   "ui_data": ui_data
 }, function(result) {});
@@ -215,6 +219,15 @@ $('.AddSlider').on('click', function() {
                           .dial({
                               'change':function(e){
                                       console.log(className + ": ",e);
+                                      var message = {
+                                      "devices": "*",
+                                      "payload": {
+                                      "panelData": {}
+                                      }
+                                    };
+                                      message.payload.panelData[className.substring(1)] = e;
+                                      conn.message(message);
+
                                   }
                               });
                   break;
@@ -228,6 +241,14 @@ $('.AddSlider').on('click', function() {
                                   , bgColor:"#EEEEEE"
                                   , change : function (value) {
                                       console.log("change " + className + ": ", value);
+                                      var message = {
+                                      "devices": "*",
+                                      "payload": {
+                                      "panelData": {}
+                                      }
+                                    };
+                                      message.payload.panelData[className.substring(1)] = value;
+                                      conn.message(message);
                                   }
                               })
                           .css({'border':'5px solid #BBB'});
@@ -238,6 +259,14 @@ $('.AddSlider').on('click', function() {
                           .slider({
                               'change':function(event,ui){
                                       console.log(className + ": ",ui.value);
+                                      var message = {
+                                      "devices": "*",
+                                      "payload": {
+                                      "panelData": {}
+                                      }
+                                    };
+                                      message.payload.panelData[className.substring(1)] = ui.value;
+                                      conn.message(message);
                                   }
                               });
                   break;
