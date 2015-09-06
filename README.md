@@ -8,14 +8,13 @@ around to build a layout and save it. It should then allow you to send messages 
 TODO:
 
 - Use angular-gridster instead https://github.com/ManifestWebDesign/angular-gridster
-- Need to create Add Widget button with menu to choose a UI element
-- Add meshblu stuffs (sending messages, storing configuration in device property)
+
 
 To use:
 
-1. Press Build from Array
-2. Drag around UI
-3. Disable Dragging
-4. Play with UI
-5. ???
-6. Profit
+
+1. Create generic meshblu device and get a UUID/token
+2. Goto http://fracture.cc/astral_plane/?uuid=YOUR-UUID&token=YOUR-TOKEN or host this repo and use ui_meshblu.html?uuid=...
+3. Add a Dial, XY Pad, or Slider
+4. Hit Save
+5. Connect all the things!
