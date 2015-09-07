@@ -88,6 +88,11 @@
                 }
               }
               appendHtml(document.body, html2);
+              conn.update({
+          "uuid": GET.uuid,
+          "widgets": serialization,
+          "ui_data": ui_data
+          }, function(result) {});
             });
           }
 
